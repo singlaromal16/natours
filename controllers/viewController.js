@@ -17,7 +17,6 @@ exports.getOverview = catchAsync(async (req, res, next) => {
 });
 
 exports.getTour = catchAsync(async (req, res, next) => {
-  console.log(req.params.slug);
   //1) get the data, for the reqested tour (including reviews and guids)
   const tour = await Tour.findOne({ slug: req.params.slug }).populate({
     path: 'reviews',
@@ -61,7 +60,6 @@ exports.getMyTours = catchAsync(async (req, res, next) => {
 });
 
 exports.updateUserData = catchAsync(async (req, res, next) => {
-  console.log(req.body);
   const updatedUser = await User.findByIdAndUpdate(
     req.user.id,
     {

@@ -44,7 +44,6 @@ exports.handlerSignup = catchAsync(async (req, res, next) => {
   const newUser = await User.create(req.body);
 
   const url = `${req.protocol}://${req.get('host')}/me`;
-  console.log(url);
   await new Email(newUser, url).sendWelcome();
 
   createSendToken(newUser, 201, res);
@@ -61,8 +60,6 @@ exports.handlerLogin = catchAsync(async (req, res, next) => {
   //2) Check if user exists && password is correct
   const user = await User.findOne({ email }).select('+password');
 
-  console.log(user);
-
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError('Incorrect email or Password', 401));
   }
@@ -76,8 +73,6 @@ exports.logout = (req, res) => {
     expires: new Date(Date.now() + 10 * 1000),
     httpOnly: true,
   });
-
-  console.log(req);
 
   res.status(200).json({ status: 'success' });
 };
@@ -100,15 +95,13 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
   }
 
-  console.log(token);
-
   // 2) Verification of the token
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  console.log('Decoded token = ' + decoded);
+  // console.log('Decoded token = ' + decoded);
   // 3) check if user still exists
 
   const currentUser = await User.findById(decoded.id);
-  console.log('Fresh User = '.currentUser);
+  // console.log('Fresh User = '.currentUser);
 
   if (!currentUser) {
     return next(
@@ -146,7 +139,7 @@ exports.isLoggedIn = async (req, res, next) => {
 
       // 2) check if user still exists
       const currentUser = await User.findById(decoded.id);
-      console.log('Fresh User = '.currentUser);
+      // console.log('Fresh User = '.currentUser);
 
       if (!currentUser) {
         return next();

@@ -7,6 +7,7 @@ const path = require('path');
 const hpp = require('hpp');
 const morgan = require('morgan'); // Third party middleware
 const cookieParser = require('cookie-parser');
+const compression = require('compression');
 
 const AppError = require('./appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -69,11 +70,14 @@ app.use(
   }),
 );
 
+app.use(compression());
+jj;
+
 // Test middleware
 app.use((req, res, next) => {
   req.myName = 'Romal Singla';
   req.requestedAt = new Date().toISOString();
-  console.log(req.cookies);
+  // console.log(req.cookies);
   next();
 });
 
