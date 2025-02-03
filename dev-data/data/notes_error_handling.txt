@@ -1,0 +1,33 @@
+### Debugging NodeJS code 
+
+## 1) NDB Lib
+ a) npm i ndb --global
+ b) Add script in package.json
+    "debug": "ndb server.js"
+ c) then run debug 
+      npm run debug
+ d) A reel chrome will open in which we can debug the code
+
+## 2) Handling Unhandled routes
+
+   app.all('*', (req, res, next) => {
+   res.status(404).json({
+      status: 'fail',
+      message: `Can't find ${req.originalUrl} on this server !!`,
+   });
+   });
+
+## 3) Error Handling
+  Operation err handling -> Error may come in future and we need to handle them in advance  
+  Programming err handling -> Programmer introduce error in the code
+
+## 4)  Central Middleware to handle middleware
+
+
+## 5) Uncaught Exceptions- All erros or bugs that occurs in our syncronoud code 
+but are not handled anywhere are called uncaught exceptions
+Eg : access the variable which does not exist.
+
+
+     
+
