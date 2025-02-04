@@ -24,7 +24,7 @@ mongoose.connect(process.env.DATABASE_LOCAL).then((con) => {
 });
 // .catch((err) => console.log('ERROR ==== '));
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => {
   console.log('App is running on port', PORT);
 });
@@ -35,5 +35,12 @@ process.on('unhandledRejection', (err) => {
   console.log('UNHANDLED REJECTION !!!');
   server.close(() => {
     process.exit(1);
+  });
+});
+
+process.on('SIGTERM', () => {
+  console.log('SIGTERM RECEIVED. Shutting down gracefully');
+  server.close(() => {
+    consoel.log('Process terminated');
   });
 });

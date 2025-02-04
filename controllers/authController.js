@@ -13,7 +13,7 @@ const signToken = (id) => {
   });
 };
 
-const createSendToken = (user, statusCode, res) => {
+const createSendToken = (user, statusCode, req, res) => {
   const token = signToken(user._id);
 
   // Send token in COOKIE
@@ -22,10 +22,9 @@ const createSendToken = (user, statusCode, res) => {
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
     ),
     httpOnly: true, // cookie can not be modified and access in any way by the browser
+    secure: req.secure || req.headers('x-forwarded-proto') === 'https', //when req is secure or headers has https (for heroku) then only this wull run
   };
-  if (process.env.NODE_ENV === 'production') {
-    cookieOptions.secure = true; // encrypt the cookie
-  }
+
   res.cookie('jwt', token, cookieOptions);
 
   // Remove password from output
@@ -46,7 +45,7 @@ exports.handlerSignup = catchAsync(async (req, res, next) => {
   const url = `${req.protocol}://${req.get('host')}/me`;
   await new Email(newUser, url).sendWelcome();
 
-  createSendToken(newUser, 201, res);
+  createSendToken(newUser, 201, req, res);
 });
 
 exports.handlerLogin = catchAsync(async (req, res, next) => {
@@ -65,7 +64,7 @@ exports.handlerLogin = catchAsync(async (req, res, next) => {
   }
 
   //3) If everything is ok, send token to client
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, req, res);
 });
 
 exports.logout = (req, res) => {
@@ -235,7 +234,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   //3)  Update changePasswordAt property for the user
   // ** Code inside user model
   //4) Log the user in, send jwt
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, req, res);
 });
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
@@ -260,5 +259,5 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   // b. validator will also not work on find and update query
 
   // 4)Log user in send JWT
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, req, res);
 });
