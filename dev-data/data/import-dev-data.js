@@ -22,7 +22,7 @@ const tours = JSON.parse(fs.readFileSync('./tours.json', 'utf-8'));
 // Import Data Into DB
 async function importDataIntoDB() {
   try {
-    console.log(tours);
+    // console.log(tours);
     await Tour.create(tours);
     // await User.create(users, { validateBeforeSave: false });
     // await Review.create(reviews);
