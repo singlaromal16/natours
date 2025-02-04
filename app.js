@@ -8,6 +8,7 @@ const hpp = require('hpp');
 const morgan = require('morgan'); // Third party middleware
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
+const cors = require('cors');
 
 const AppError = require('./appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -27,6 +28,16 @@ app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
 // 1) GLOBAL MIDDLEWARE
+
+// implement CORS
+//allow url natours.com to access apis api.natours.com
+// app.use(cors({
+//   origin: 'https://www.natours.com'
+// }))
+//Access-Control-Allow-Origin *
+app.use(cors()); // get or post
+app.options('*', cors()); //preflight req // for delete or put or patch
+// app.options('api/v1/tours/:id', cors())
 
 // Serving static files
 // app.use(express.static(`${__dirname}/public`)); // serve static files from folder not routes
