@@ -7,11 +7,13 @@ const path = require('path');
 const hpp = require('hpp');
 const morgan = require('morgan'); // Third party middleware
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 const compression = require('compression');
 const cors = require('cors');
 
 const AppError = require('./appError');
 const globalErrorHandler = require('./controllers/errorController');
+const bookingController = require('./controllers/bookingController');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
@@ -59,6 +61,13 @@ const limiter = rateLimit({
 }); //100 requests in 1 hour
 app.use('/api', limiter);
 
+// we need data in string thats y we put this here before bodyparser
+app.post(
+  '/webhook-checkout',
+  bodyParser.raw({ type: 'application/json' }),
+  bookingController.webhookCheckout,
+);
+
 //Body parser, reading data from body into req.body
 app.use(express.json({ limit: '10kb' })); //body size should be less than or equal to 10kb
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
@@ -85,7 +94,6 @@ app.use(
 );
 
 app.use(compression());
-jj;
 
 // Test middleware
 app.use((req, res, next) => {
