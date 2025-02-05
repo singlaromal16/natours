@@ -1,6 +1,7 @@
 import { login, logout } from './login';
 import { updateSettings } from './updateSettings';
 import { bookTour } from './stripe';
+import { showAlert } from './alert';
 
 // console.log('Hello from parcel');
 
@@ -63,3 +64,7 @@ if (bookBtn)
     const tourId = e.target.dataset.tourId;
     bookTour(tourId);
   });
+
+const alertMessage = document.querySelector('body').dataset.alert;
+
+if (alertMessage) showAlert('success', alertMessage, 20);
